@@ -1,0 +1,3 @@
+INDICE	D[i,j] =	S[i,j] =	MOTIVO
+[0,1]	1			 { }		 prop[1,2]	
+

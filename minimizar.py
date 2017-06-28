@@ -5,6 +5,16 @@
 # na Universidade Federal de Lavras - UFLA
 # Data: 
 
-def minimizaAutomato {
-	# TODO
-}
+class Automato(object):
+    def __init__(self, alfabeto ,estados ,transicoes):
+        self.alfabeto = alfabeto
+        self.estados = estados
+        self.transicoes = transicoes
+
+    def leAutomatoDoArquivo(nomeArquivo):
+        arquivo = open(nomeArquivo, 'r')
+        # TODO
+        arquivo.close()
+
+    def minimizaAutomato():
+	    # TODO
