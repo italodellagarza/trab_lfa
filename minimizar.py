@@ -11,10 +11,14 @@ class Automato(object):
         self.estados = estados
         self.transicoes = transicoes
 
-    def leAutomatoDoArquivo(nomeArquivo):
+    def leAutomatoDoArquivo(self, nomeArquivo):
         arquivo = open(nomeArquivo, 'r')
         # TODO
         arquivo.close()
 
-    def minimizaAutomato():
+    def minimizaAutomato(self):
 	    # TODO
+
+#main
+if __name__ == "__main__":
+    print "TODO"
