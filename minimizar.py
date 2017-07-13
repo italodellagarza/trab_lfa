@@ -1,3 +1,4 @@
+#!/usr/bin/env python3.5
 # Desenvolvido por:  Ítalo Della Garza Silva
 #                    Bruno Queiróz Santos
 #                    Márcio Inácio
@@ -9,11 +10,13 @@
    O autômato é aqui formalizado em uma quíntupla (estados, alfabeto, transições, iniciais e finais)
    Na qual a informação de estado final é armazenada na própria estrutura Estado'''
 
-class Estado(object):
-    def __init__(self, nomeEstado):
+class Estado:
+    def __init__(self):
         '''Construtor de classe'''
-        self.nomeEstado = nomeEstado
-        self.final = False
+        self.arquivo = open("desc_af1.txt", 'r')
+        self.arquivo.readline()
+        self.nomeEstado = self.arquivo.readline().replace(",", " ").replace("{","").replace("}","").split() #funçao que pega todos os estados do arquivo
+        self.final = [False]*len(self.nomeEstado)
 
 class Transicao(object):
     def __init__(self, estadoAtual, estadoSeguinte, letras):
@@ -52,4 +55,7 @@ class Automato(object):
 
 # main
 if __name__ == "__main__":
-    print ("TODO")
+     #print ("TODO")
+    e = Estado()
+    print (e.nomeEstado)
+    print (len(e.final))
