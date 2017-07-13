@@ -10,13 +10,11 @@
    O autômato é aqui formalizado em uma quíntupla (estados, alfabeto, transições, iniciais e finais)
    Na qual a informação de estado final é armazenada na própria estrutura Estado'''
 
-class Estado:
-    def __init__(self):
+class Estado(object):
+    def __init__(self, nomeEstado):
         '''Construtor de classe'''
-        self.arquivo = open("desc_af1.txt", 'r')
-        self.arquivo.readline()
-        self.nomeEstado = self.arquivo.readline().replace(",", " ").replace("{","").replace("}","").split() #funçao que pega todos os estados do arquivo
-        self.final = [False]*len(self.nomeEstado)
+        self.nomeEstado = nomeEstado
+        self.final = False
 
 class Transicao(object):
     def __init__(self, estadoAtual, estadoSeguinte, letras):
@@ -24,26 +22,54 @@ class Transicao(object):
         # A transição vai de estadoAtual para estadoSeguinte
         self.estadoAtual = estadoAtual
         self.estadoSeguinte = estadoSeguinte
-        self.letras = letras                    # Lista de letras do alfabeto
+        self.letras.append(letras)              # Lista de letras do alfabeto
                                                 # em que é feita a transição
 
 class Automato(object):
-    def __init__(self, estados, alfabeto ,transicoes, estadoInicial):
+    def __init__(self):
         '''Construtor de classe.'''
-        self.estadoInicial = estadoInicial
-        self.alfabeto = alfabeto
-        self.estados = estados
-        self.transicoes = transicoes
-
-    def leAutomatoDoArquivo(self, arquivoEntrada):
         entrada = open(arquivoEntrada, 'r')
-        # TODO Primeiro ele deve ler no arquivo o caractere '('. Se não leu sai do programa e dispara excessão!
-        # TODO Depois ele deve ler no arquivo os caracteres '{' , '}'. Se não leu sai do programa e dispara excessão!
-        # TODO Lê estado por estado, separados por ',' (vírgula)
-        # TODO Depois lê o alfabeto, separados por ',' (vírgula)
-        # TODO Depois lê as transições, do tipo (estado1, letra -> estado2)
-        # TODO Por fim lê o estado inicial e aponta para o mesmo
-        # TODO Lê um conjunto de estados finais e muda o atributo deles para True
+        # Aqui, começamos a pegar todos os estados do arquivo e eliminar caracteres inúteis:
+        entrada.readline()
+        temp = entrada.readline().replace(",", " ").replace("{", "").replace("}","").split()
+        self.estados = []
+        for nome in temp:
+            self.estados.append(Estado(nome))
+
+        # A seguir, aplicamos a mesma logica acima para o alfabeto
+        temp = entrada.readline().replace(",", " ").replace("{", "").replace("}","").split()
+        self.alfabeto = []
+        for letra in temp:
+            self.alfabeto.append(letra)
+
+        # Para as transições, temos que ler várias linhas. Precisamos de um critério de parada:
+        entrada.readline()
+        # Acusa como errado. Testar:
+        while temp = entrada.readline().replace(",", " ").replace("(", "").replace("),","").replace("->","").split():
+            ja_existe = False
+            for estado in self.estados:
+                if estado.estadoAtual == temp[0] and estado.estadoSeguinte == temp[2]:
+                    ja_existe = True
+                    estado.letras.append(temp[1])
+            if not ja_existe:
+                self.transicoes.append(Transicao(temp[0],temp[2],temp[1]))
+
+        # Para o estado inicial, basta ler seu nome e buscá-lo na lista já existente:
+        entrada.readline()
+        temp = entrada.readline().replace(",", "")
+        for estado in self.estados:
+            if estado.nomeEstado == temp:
+                self.inicial = estado
+
+        # Para os estados finais, procurar cada um na lista de estados e setá-los como final = True
+        temp = entrada.readline().replace(",", " ").replace("{", "").replace("}", "").split()
+        for tempEstado in temp:
+            for estado in self.estados:
+                if tempEstado.nomeEstado == estado.nomeEstado:
+                    estado.final = True
+
+        # TODO TESTAR E CORRIGIR!!!!
+
         entrada.close()
 
     def minimizaAutomato(self, automatoSaida, tabelaSaida):
@@ -55,7 +81,7 @@ class Automato(object):
 
 # main
 if __name__ == "__main__":
-     #print ("TODO")
-    e = Estado()
-    print (e.nomeEstado)
-    print (len(e.final))
+    #print ("TODO")
+    #e = Estado()
+    #print (e.nomeEstado)
+    #print (len(e.final))
