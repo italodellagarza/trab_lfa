@@ -49,7 +49,7 @@ class Automato(object):
         temp = entrada.readline()
         self.transicoes = []
         while temp[0] == '(':
-            temp = temp.replace(",", " ").replace("(", "").replace("),", "").replace("->", " ").split()
+            temp = temp.replace(",", " ").replace("(", "").replace(")", "").replace("->", " ").split()
             ja_existe = False
             for transicao in self.transicoes:
                 if transicao.estadoAtual.nomeEstado == temp[0] and transicao.estadoSeguinte.nomeEstado == temp[2]:
@@ -68,12 +68,9 @@ class Automato(object):
 
         # Para o estado inicial, basta ler seu nome e buscá-lo na lista já existente:
         temp = entrada.readline().replace(",", "")
-        print("inicial = " + temp)
         self.inicial = self.estados[0]
         for estado in self.estados:
-            print("aqui1")
-            if estado.nomeEstado == temp:
-                print("aqui1")
+            if temp == estado.nomeEstado + '\n': # Adicionei o \n porque a string temp o possui quando lê do arquivo.
                 self.inicial = estado
 
         # Para os estados finais, procurar cada um na lista de estados e setá-los como final = True
@@ -83,18 +80,23 @@ class Automato(object):
                 if tempEstado == estado.nomeEstado:
                     estado.final = True
 
-        # TODO TESTAR E CORRIGIR!!!!
+        # TODO Melhorar !!! (E tratar excessão)
 
         entrada.close()
 
     def minimizaAutomato(self, automatoSaida, tabelaSaida):
         automato = open(automatoSaida)
         tabela = open(tabelaSaida)
-        # TODO
+        # TODO (Tratar por estrutura, se necessário)
+        # TODO 1. O programa cria uma lista de pares (para cada par, define-se  um boolean D[i,j], uma lista de pares S[i,j] e uma string Motivo)
+        # TODO 2. D[final,nao-final] e D[nao-final,final] = False
+        # TODO 3. Para cada par, compara-se suas transições.
+        # TODO 3.1 Se transição de par[1] -> final e transição par[2]-> nao final ou o contrário, D[i,j] = false para esse par e todos os seus S[i,j]
+        # TODO 3.2 Senao:
         tabela.close()
         automato.close()
 
-# main
+# Função Principal
 if __name__ == "__main__":
     print ("TODO")
     a = Automato("desc_af1.txt")
@@ -106,8 +108,8 @@ if __name__ == "__main__":
         print(transicao.estadoAtual.nomeEstado + " -> " + transicao.estadoSeguinte.nomeEstado)
         print(transicao.letras)
 
-    print (a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
+    print(a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
 
-    print (a.inicial.nomeEstado)
+    print(a.inicial.nomeEstado)
 
 
