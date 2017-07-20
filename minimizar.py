@@ -101,7 +101,7 @@ class Automato(object):
         		for t2 in lista_t2:
         			if t1.letra == t2.letra:
         				for par_seguinte in lista_pares:
-        					while not ((t1.estadoSeguinte == par_seguinte.estado1 and t2.estadoSeguinte == par_seguinte.estado2) or
+        					while not ((t1.estadoSeguinte == par_seguinte.estado1 and t2.estadoSeguinte == par_seguinte.estado2) or # loop inifinito while
         					          (t2.estadoSeguinte == par_seguinte.estado1 and t1.estadoSeguinte == par_seguinte.estado2)):
         						pass
         					if not par_seguinte.dij:
