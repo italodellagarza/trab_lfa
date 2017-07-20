@@ -10,6 +10,9 @@
    O autômato é aqui formalizado em uma quíntupla (estados, alfabeto, transições, iniciais e finais)
    Na qual a informação de estado final é armazenada na própria estrutura Estado'''
 
+# Biblioteca necessaria para utilizar argv 
+import sys; 
+
 class Estado(object):
     def __init__(self, nomeEstado):
         '''Construtor de classe'''
@@ -27,9 +30,9 @@ class Transicao(object):
                                                 # em que é feita a transição
 
 class Automato(object):
-    def __init__(self, arquivoEntrada):
+    def __init__(self):
         '''Construtor de classe.'''
-        entrada = open(arquivoEntrada, 'r')
+        entrada = open(sys.argv[1], 'r')
         # Aqui, começamos a pegar todos os estados do arquivo e eliminar caracteres inúteis:
         entrada.readline()
         temp = entrada.readline().replace(",", " ").replace("{", "").replace("}","").split()
@@ -84,32 +87,57 @@ class Automato(object):
 
         entrada.close()
 
-    def minimizaAutomato(self, automatoSaida, tabelaSaida):
-        automato = open(automatoSaida)
-        tabela = open(tabelaSaida)
+    def minimizaAutomato(self):
+        automato = open(sys.argv[2], 'w')
+        tabela = open(sys.argv[3], 'w')
         # TODO (Tratar por estrutura, se necessário)
         # TODO 1. O programa cria uma lista de pares (para cada par, define-se  um boolean D[i,j], uma lista de pares S[i,j] e uma string Motivo)
         # TODO 2. D[final,nao-final] e D[nao-final,final] = False
-        # TODO 3. Para cada par, compara-se suas transições.
-        # TODO 3.1 Se transição de par[1] -> final e transição par[2]-> nao final ou o contrário, D[i,j] = false para esse par e todos os seus S[i,j]
+        lista_pares = []
+        for e1 in range(len(self.estados)):
+        	for e2 in range(len(self.estados)-e1-1):
+        		lista_pares.append(Par(self.estados[e1], self.estados[e1 + e2 + 1]))
+
+        for par in lista_pares:
+        	if(par.estado1.final and not par.estado2.final) or (not par.estado1.final and par.estado2.final):
+        		par.dij = False
+        		par.motivo = "final/nao final"
+
+        for par in lista_pares:
+        	print(par.estado1.nomeEstado, par.estado2.nomeEstado)
+        	print(par.dij)
+        	print(par.motivo)
+        	
+
         # TODO 3.2 Senao:
         tabela.close()
         automato.close()
 
+class Par:
+	def __init__(self, estado1, estado2):
+		self.estado1 = estado1
+		self.estado2 = estado2
+		self.dij = True
+		self.sij = []
+		self.motivo = ""
+	
+
+
+
 # Função Principal
 if __name__ == "__main__":
-    print ("TODO")
-    a = Automato("desc_af1.txt")
-    for estado in a.estados:
-        print(estado.nomeEstado)
-        if estado.final:
-            print('final')
-    for transicao in a.transicoes:
-        print(transicao.estadoAtual.nomeEstado + " -> " + transicao.estadoSeguinte.nomeEstado)
-        print(transicao.letras)
+	print ("TODO")
+	a = Automato()
+	a.minimizaAutomato()
+'''	for estado in a.estados:
+		print(estado.nomeEstado)
+		if estado.final:
+			print('final')
+	for transicao in a.transicoes:
+		print(transicao.estadoAtual.nomeEstado + " -> " + transicao.estadoSeguinte.nomeEstado)
+		print(transicao.letras)
 
-    print(a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
+	print(a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
 
-    print(a.inicial.nomeEstado)
-
+	print(a.inicial.nomeEstado)'''
 
