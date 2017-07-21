@@ -46,7 +46,6 @@ class Automato(object):
 
         # Para as transições, temos que ler várias linhas. Precisamos de um critério de parada:
         entrada.readline() # Lê o '{'
-        # Acusa como errado. Testar:
         temp = entrada.readline()
         self.transicoes = []
         while temp[0] == '(':
@@ -109,7 +108,7 @@ class Automato(object):
                                     par_seguinte = par2
                                 
                             if not par_seguinte.dij:
-                                par.nega_dij(t1.letra + par.para_string())
+                                par.nega_dij(t1.letra + par_seguinte.para_string())
                             elif par_seguinte != par:
                                 par_seguinte.sij.append(par)
         for par in lista_pares:
@@ -129,11 +128,14 @@ class Automato(object):
 
     # Recebe a lista de dados do minimiza automato que contem os objetos Par e escreve no arquivo tabela.txt
     def escreve_tabela(self, lista_tabela):
-        tabela_saida = open(sys.argv[2], 'r+')
-        tabela_saida.readline()
+        tabela_saida = open(sys.argv[2], 'w')
+        tabela_saida.write("INDICE\t\tD[i,j]=\t\t\tS[i,j]=\t\t\t\tMOTIVO")
         for linha in lista_tabela:
             tabela_saida.write("\n[" + str(linha.estado1.nomeEstado).replace("q","") + "," + str(linha.estado2.nomeEstado).replace("q","") + "]")
-            tabela_saida.write("\t\t" + str(linha.dij))
+            if linha.dij:
+                tabela_saida.write("\t\t0")
+            else:
+                tabela_saida.write("\t\t1")
             dependencias = "{ "
             if len(linha.sij) > 0:
                 dependencias += linha.sij[0].para_string()
