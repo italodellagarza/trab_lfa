@@ -119,29 +119,39 @@ class Automato(object):
             #tabela.close()
             #automato.close()
         self.escreve_tabela(lista_pares)
+        #self.escreve_afd_minimizado(lista_pares)
 
     def transicoesDeEstado(self, estado):
         listaTransicoes = []
         for transicao in self.transicoes:
             if transicao.estadoAtual == estado:
                 listaTransicoes.append(transicao)
-        return listaTransicoes
+        return listaTransicoes	
 
-    # Recebe a lista de dados do minimiza automato que contem os objetos Par e escreve no arquivo tabela.txt
     def escreve_tabela(self, lista_tabela):
-        tabela_saida = open(sys.argv[2], 'r+')
-        tabela_saida.readline()
-        for linha in lista_tabela:
-            tabela_saida.write("\n[" + str(linha.estado1.nomeEstado).replace("q","") + "," + str(linha.estado2.nomeEstado).replace("q","") + "]")
-            tabela_saida.write("\t\t" + str(linha.dij))
-            #tabela_saida.write("\t\t\t{ " + str(linha.sij) + " }") << bug que nao entendi
-            tabela_saida.write("\t\t\t{   }")
-            tabela_saida.write("\t\t\t\t" + linha.motivo)
-        tabela_saida.close()
+    	tabela_saida = open(sys.argv[2], 'w')
+    	tabela_saida.write("INDICE\t\tD[i,j] =\t\tS[i,j] =\t\t\tMOTIVO")
+    	for linha in lista_tabela:
+    		tabela_saida.write("\n[" + str(linha.estado1.nomeEstado).replace("q","") + "," + str(linha.estado2.nomeEstado).replace("q","") + "]")
+    		tabela_saida.write("\t\t" + str(linha.dij))
+    		# tabela_saida.write("\t\t\t{ " + str(linha.sij) + " }")
+    		tabela_saida.write("\t\t\t{   }")
+    		tabela_saida.write("\t\t\t" + linha.motivo)
+    	tabela_saida.close()	
 
-    def escreve_afd_minimizado(self):
-        print ("TODO")
+    def escreve_afd_minimizado(self, lista_tabela):
         # TODO: Ler a lista de dados do minimiza automato e juntar estados onde o Dij for True
+        afd_minimizado = open(sys.argv[3], 'w')
+        afd_minimizado.write("\n(")
+        cont = 0
+        for linha in lista_tabela:
+        	if linha.dij:
+        		pass
+        	else:
+        		pass
+        	cont+=1
+
+        afd_minimizado.write("\n{" + str(self.alfabeto) + "},")
 
 class Par:
     def __init__(self, estado1, estado2):
@@ -164,6 +174,16 @@ if __name__ == "__main__":
     a = Automato()
     a.minimizaAutomato()
 
+    for estado in a.estados:
+    	print(estado.nomeEstado)
+    	if estado.final:
+    		print('final')
+    for transicao in a.transicoes:
+    	print(transicao.estadoAtual.nomeEstado + " -> " + transicao.estadoSeguinte.nomeEstado)
+    	print(transicao.letra)
+    print(a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
+    print(a.inicial.nomeEstado)
+
     #gerando valores aleatorios 
 '''    lista = []
     for i in range(10):
@@ -175,17 +195,4 @@ if __name__ == "__main__":
 
     a.escreve_tabela(lista)
 '''
-    #teste de impressao da estrutura automato
-    #a.minimizaAutomato()
-'''    for estado in a.estados:
-        print(estado.nomeEstado)
-        if estado.final:
-            print('final')
-    for transicao in a.transicoes:
-        print(transicao.estadoAtual.nomeEstado + " -> " + transicao.estadoSeguinte.nomeEstado)
-        print(transicao.letras)
-
-    print(a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
-
-    print(a.inicial.nomeEstado)'''
 
