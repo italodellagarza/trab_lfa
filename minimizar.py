@@ -96,25 +96,23 @@ class Automato(object):
                 par.motivo = "final/nao final"
                 
         for par in lista_pares:
-            lista_t1 = self.transicoesDeEstado(par.estado1)
-            lista_t2 = self.transicoesDeEstado(par.estado2)
-            for t1 in lista_t1:
-                for t2 in lista_t2:
-                    if t1.letra == t2.letra:
-                        par_seguinte = par
-                        for par2 in lista_pares:
-                            if ((t1.estadoSeguinte == par2.estado1 and t2.estadoSeguinte == par2.estado2) or # loop inifinito while
-                               (t2.estadoSeguinte == par2.estado1 and t1.estadoSeguinte == par2.estado2)):
-                                par_seguinte = par
-                            
-                            if not par_seguinte.dij:
-                                par.dij = False
-                                par.motivo = t1.letra # ou t2.letra
-                                for dependencias in par.sij:
-                                    dependencias.dij = False
-                                    dependencias.motivo = ("prop[", par.estado1.nomeEstado, ",", par.estado2.nomeEstado,"]")
-                            else:
-                                par_seguinte.sij.append(par)
+            if par.dij: # Isso garante que a função não leia o par desnecessariamente
+                lista_t1 = self.transicoesDeEstado(par.estado1)
+                lista_t2 = self.transicoesDeEstado(par.estado2)
+                for t1 in lista_t1:
+                    for t2 in lista_t2:
+                        if t1.letra == t2.letra and par.dij:
+                            par_seguinte = par
+                            for par2 in lista_pares:
+                                if ((t1.estadoSeguinte == par2.estado1 and t2.estadoSeguinte == par2.estado2) or 
+                                   (t2.estadoSeguinte == par2.estado1 and t1.estadoSeguinte == par2.estado2)):
+                                    par_seguinte = par2
+                                
+                                if not par_seguinte.dij:
+                                    par.nega_dij(t1.letra + "[" + par_seguinte.estado1.nomeEstado.replace("q","")
+                                                 +"," +par_seguinte.estado2.nomeEstado.replace("q","") + "]")
+                                else:
+                                    par_seguinte.sij.append(par)
         for par in lista_pares:
             print("[", par.estado1.nomeEstado, ",", par.estado2.nomeEstado, "] \t\t", par.dij, par.motivo)
             # TODO 3.2 Senao:
@@ -123,64 +121,71 @@ class Automato(object):
         self.escreve_tabela(lista_pares)
 
     def transicoesDeEstado(self, estado):
-    	listaTransicoes = []
-    	for transicao in self.transicoes:
-    		if transicao.estadoAtual == estado:
-    			listaTransicoes.append(transicao)
-    	return listaTransicoes
+        listaTransicoes = []
+        for transicao in self.transicoes:
+            if transicao.estadoAtual == estado:
+                listaTransicoes.append(transicao)
+        return listaTransicoes
 
     # Recebe a lista de dados do minimiza automato que contem os objetos Par e escreve no arquivo tabela.txt
     def escreve_tabela(self, lista_tabela):
-    	tabela_saida = open(sys.argv[2], 'r+')
-    	tabela_saida.readline()
-    	for linha in lista_tabela:
-    		tabela_saida.write("\n[" + str(linha.estado1.nomeEstado).replace("q","") + "," + str(linha.estado2.nomeEstado).replace("q","") + "]")
-    		tabela_saida.write("\t\t" + str(linha.dij))
-    		#tabela_saida.write("\t\t\t{ " + str(linha.sij) + " }") << bug que nao entendi
-    		tabela_saida.write("\t\t\t{   }")
-    		tabela_saida.write("\t\t\t\t" + linha.motivo)
-    	tabela_saida.close()
+        tabela_saida = open(sys.argv[2], 'r+')
+        tabela_saida.readline()
+        for linha in lista_tabela:
+            tabela_saida.write("\n[" + str(linha.estado1.nomeEstado).replace("q","") + "," + str(linha.estado2.nomeEstado).replace("q","") + "]")
+            tabela_saida.write("\t\t" + str(linha.dij))
+            #tabela_saida.write("\t\t\t{ " + str(linha.sij) + " }") << bug que nao entendi
+            tabela_saida.write("\t\t\t{   }")
+            tabela_saida.write("\t\t\t\t" + linha.motivo)
+        tabela_saida.close()
 
     def escreve_afd_minimizado(self):
-    	print ("TODO")
-    	# TODO: Ler a lista de dados do minimiza automato e juntar estados onde o Dij for True
+        print ("TODO")
+        # TODO: Ler a lista de dados do minimiza automato e juntar estados onde o Dij for True
 
 class Par:
-	def __init__(self, estado1, estado2):
-		self.estado1 = estado1
-		self.estado2 = estado2
-		self.dij = True
-		self.sij = []
-		self.motivo = ""
+    def __init__(self, estado1, estado2):
+        self.estado1 = estado1
+        self.estado2 = estado2
+        self.dij = True
+        self.sij = []
+        self.motivo = ""
+
+    def nega_dij(self, motivo):
+        self.dij = False
+        self.motivo = motivo
+        for s in self.sij:
+            if s.dij:
+                s.nega_dij(("prop[" + self.estado1.nomeEstado.replace("q","") + "," + self.estado2.nomeEstado.replace("q","") + "]"))
 
 # Função Principal
 if __name__ == "__main__":
-	print ("TODO")
-	a = Automato()
-	a.minimizaAutomato()
+    print ("TODO")
+    a = Automato()
+    a.minimizaAutomato()
 
-	#gerando valores aleatorios 
-'''	lista = []
-	for i in range(10):
-		lista.append(Par(i, i+1))
+    #gerando valores aleatorios 
+'''    lista = []
+    for i in range(10):
+        lista.append(Par(i, i+1))
 
-	for j in lista:
-		j.sij.append(1)
-		j.motivo = "a"
+    for j in lista:
+        j.sij.append(1)
+        j.motivo = "a"
 
-	a.escreve_tabela(lista)
+    a.escreve_tabela(lista)
 '''
-	#teste de impressao da estrutura automato
-	#a.minimizaAutomato()
-'''	for estado in a.estados:
-		print(estado.nomeEstado)
-		if estado.final:
-			print('final')
-	for transicao in a.transicoes:
-		print(transicao.estadoAtual.nomeEstado + " -> " + transicao.estadoSeguinte.nomeEstado)
-		print(transicao.letras)
+    #teste de impressao da estrutura automato
+    #a.minimizaAutomato()
+'''    for estado in a.estados:
+        print(estado.nomeEstado)
+        if estado.final:
+            print('final')
+    for transicao in a.transicoes:
+        print(transicao.estadoAtual.nomeEstado + " -> " + transicao.estadoSeguinte.nomeEstado)
+        print(transicao.letras)
 
-	print(a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
+    print(a.estados[0] == a.transicoes[0].estadoAtual) # está apontando corretamente
 
-	print(a.inicial.nomeEstado)'''
+    print(a.inicial.nomeEstado)'''
 
