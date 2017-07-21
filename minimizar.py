@@ -135,9 +135,10 @@ class Automato(object):
     	for linha in lista_tabela:
     		if linha.dij:
     			pos = int(linha.estado1.nomeEstado.replace("q",""))
-    			novo_estado = novo_estado + linha.estado1.nomeEstado + linha.estado2.nomeEstado
-    			#pos = 0
-    	print (novo_estado.find("q4"))
+    			if novo_estado.find(linha.estado1.nomeEstado) == -1:
+    				novo_estado = novo_estado + linha.estado1.nomeEstado
+    			if novo_estado.find(linha.estado2.nomeEstado) == -1:
+    				novo_estado = novo_estado + linha.estado2.nomeEstado  # estados agrupados, falta adicionar na estrutura automato
 
   	# recebe lista_pares da funçao minimizaAutomato e escreve conteudo na tabela.txt
     def escreve_tabela(self, lista_tabela):
