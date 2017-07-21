@@ -108,16 +108,16 @@ class Automato(object):
                                    (t2.estadoSeguinte == par2.estado1 and t1.estadoSeguinte == par2.estado2)):
                                     par_seguinte = par2
                                 
-                                if not par_seguinte.dij:
-                                    par.nega_dij(t1.letra + "[" + par_seguinte.estado1.nomeEstado.replace("q","")
-                                                 +"," +par_seguinte.estado2.nomeEstado.replace("q","") + "]")
-                                else:
-                                    par_seguinte.sij.append(par)
+                            if not par_seguinte.dij:
+                                par.nega_dij(t1.letra + par.para_string())
+                            elif par_seguinte != par:
+                                par_seguinte.sij.append(par)
         for par in lista_pares:
-            print("[", par.estado1.nomeEstado, ",", par.estado2.nomeEstado, "] \t\t", par.dij, par.motivo)
+            #print("[", par.estado1.nomeEstado, ",", par.estado2.nomeEstado, "] \t\t", par.dij, par.motivo)
             # TODO 3.2 Senao:
             #tabela.close()
             #automato.close()
+            pass
         self.escreve_tabela(lista_pares)
 
     def transicoesDeEstado(self, estado):
@@ -134,8 +134,15 @@ class Automato(object):
         for linha in lista_tabela:
             tabela_saida.write("\n[" + str(linha.estado1.nomeEstado).replace("q","") + "," + str(linha.estado2.nomeEstado).replace("q","") + "]")
             tabela_saida.write("\t\t" + str(linha.dij))
-            #tabela_saida.write("\t\t\t{ " + str(linha.sij) + " }") << bug que nao entendi
-            tabela_saida.write("\t\t\t{   }")
+            dependencias = "{ "
+            if len(linha.sij) > 0:
+                dependencias += linha.sij[0].para_string()
+            for s in linha.sij:
+                if linha.sij[0] != s:
+                    dependencias += s.para_string()
+                    dependencias += ", "
+            dependencias += " }"
+            tabela_saida.write("\t\t\t" + dependencias)
             tabela_saida.write("\t\t\t\t" + linha.motivo)
         tabela_saida.close()
 
@@ -156,7 +163,13 @@ class Par:
         self.motivo = motivo
         for s in self.sij:
             if s.dij:
-                s.nega_dij(("prop[" + self.estado1.nomeEstado.replace("q","") + "," + self.estado2.nomeEstado.replace("q","") + "]"))
+                s.nega_dij(("prop" + self.para_string()))
+
+    def para_string(self):
+        str = "[" + self.estado1.nomeEstado.replace("q","") + "," + self.estado2.nomeEstado.replace("q","") + "]"
+        return str
+
+
 
 # Função Principal
 if __name__ == "__main__":
