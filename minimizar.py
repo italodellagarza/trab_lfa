@@ -1,6 +1,6 @@
 #!/usr/bin/env python3.5
 # Desenvolvido por:  Ítalo Della Garza Silva
-#                    Bruno Queiróz Santos
+#                    Bruno Queiroz Santos
 #                    Márcio Inácio
 # Para a disciplina de Linguagens Formais e Autômatos
 # na Universidade Federal de Lavras - UFLA
@@ -118,7 +118,8 @@ class Automato(object):
             # TODO 3.2 Senao:
             #tabela.close()
             #automato.close()
-        self.escreve_tabela(lista_pares)
+        #self.escreve_tabela(lista_pares)
+        self.atualiza_automato(lista_pares)
         #self.escreve_afd_minimizado(lista_pares)
 
     def transicoesDeEstado(self, estado):
@@ -126,19 +127,31 @@ class Automato(object):
         for transicao in self.transicoes:
             if transicao.estadoAtual == estado:
                 listaTransicoes.append(transicao)
-        return listaTransicoes	
+        return listaTransicoes
+	
+	#funcao que atualiza a estrutura automato para guardar os valores do automato minimizado
+    def atualiza_automato(self,lista_tabela):
+    	novo_estado = ""
+    	for linha in lista_tabela:
+    		if linha.dij:
+    			pos = int(linha.estado1.nomeEstado.replace("q",""))
+    			novo_estado = novo_estado + linha.estado1.nomeEstado + linha.estado2.nomeEstado
+    			#pos = 0
+    	print (novo_estado.find("q4"))
 
+  	# recebe lista_pares da funçao minimizaAutomato e escreve conteudo na tabela.txt
     def escreve_tabela(self, lista_tabela):
     	tabela_saida = open(sys.argv[2], 'w')
     	tabela_saida.write("INDICE\t\tD[i,j] =\t\tS[i,j] =\t\t\tMOTIVO")
     	for linha in lista_tabela:
     		tabela_saida.write("\n[" + str(linha.estado1.nomeEstado).replace("q","") + "," + str(linha.estado2.nomeEstado).replace("q","") + "]")
     		tabela_saida.write("\t\t" + str(linha.dij))
-    		# tabela_saida.write("\t\t\t{ " + str(linha.sij) + " }")
+    		# tabela_saida.write("\t\t\t{ " + str(linha.sij) + " }") # arrumar para printar todos os sij
     		tabela_saida.write("\t\t\t{   }")
     		tabela_saida.write("\t\t\t" + linha.motivo)
     	tabela_saida.close()	
 
+    #escreve o automato minimizado, que foi atualizado na funçao atualiza_automato
     def escreve_afd_minimizado(self, lista_tabela):
         # TODO: Ler a lista de dados do minimiza automato e juntar estados onde o Dij for True
         afd_minimizado = open(sys.argv[3], 'w')
@@ -150,7 +163,6 @@ class Automato(object):
         	else:
         		pass
         	cont+=1
-
         afd_minimizado.write("\n{" + str(self.alfabeto) + "},")
 
 class Par:
