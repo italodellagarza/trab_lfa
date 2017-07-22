@@ -128,6 +128,7 @@ class Automato(object):
 	#funcao que atualiza a estrutura automato para guardar os valores do automato minimizado
 	def atualiza_automato(self,lista_tabela):
 		novo_estado = []
+		pos = []
 		cont = 0
 		for linha in lista_tabela:
 			if linha.dij:
@@ -137,28 +138,22 @@ class Automato(object):
 				if novo_estado[cont].find(linha.estado2.nomeEstado) == -1:
 					novo_estado[cont] = novo_estado[cont] + linha.estado2.nomeEstado  # estados agrupados, falta adicionar na estrutura automato
 				cont +=1
+				pos.append(int(linha.estado1.nomeEstado.replace("q","")))
 		print (novo_estado)
 
-		# arrumar o codigo pra baixo para pegar cada posicao de quando o dij for true
-		#encontrando a posicao do primeiro par true 
-		for linha in lista_tabela:
-			if linha.dij:
-				pos = int(linha.estado1.nomeEstado.replace("q",""))
-				break
-
 		# arrumando transicoes
-		for j in range(pos, len(self.estados)):
-			for i in range(len(self.transicoes)):
-				print (j)
-				if self.transicoes[i].estadoSeguinte.nomeEstado.find(self.estados[j].nomeEstado) != -1:
-					self.transicoes[i].estadoSeguinte.nomeEstado = novo_estado[j]
-				if self.transicoes[i].estadoSeguinte.nomeEstado.find(self.estados[j].nomeEstado) != -1:
-					self.transicoes[i].estadoSeguinte.nomeEstado = novo_estado[j]
+		for i in pos:
+			for j in range(len(self.transicoes)):
+				if self.transicoes[j].estadoSeguinte.nomeEstado.find(self.estados[i-1].nomeEstado) != -1:
+					self.transicoes[j].estadoSeguinte.nomeEstado = novo_estado[i-1]
+				if self.transicoes[j].estadoSeguinte.nomeEstado.find(self.estados[i-1].nomeEstado) != -1:
+					self.transicoes[j].estadoSeguinte.nomeEstado = novo_estado[i-1]
 
 
 		#apagando estados que foram juntados
-		del self.estados[pos+1:]
-		del self.transicoes[(pos*len(self.alfabeto))+2:]
+		for i in pos:
+			del self.estados[i+1]
+			del self.transicoes[(i*len(self.alfabeto))+2]
 
 	# recebe lista_pares da funçao minimizaAutomato e escreve conteudo na tabela.txt 
 	def escreve_tabela(self,lista_tabela):
@@ -194,27 +189,27 @@ class Automato(object):
 		afd_minimizado.close()
 
  #Extra: Transformação de um AFD qualquer em um AFD completo
-    def e_completo(self):
-        for estado in self.estados:
-            transicoes = self.transicoesDeEstado(estado)
-            if len(transicoes) != len(self.alfabeto):
-                return False
-        return True
+	def e_completo(self):
+		for estado in self.estados:
+			transicoes = self.transicoesDeEstado(estado)
+			if len(transicoes) != len(self.alfabeto):
+				return False
+		return True
 
-    def transforma_em_completo(self):
-        if not self.e_completo():
-            qerro = Estado("qerro")
-            self.estados.append(qerro)
+	def transforma_em_completo(self):
+		if not self.e_completo():
+			qerro = Estado("qerro")
+			self.estados.append(qerro)
 
-            for estado in self.estados:
-                transicoes = self.transicoesDeEstado(estado)
-                simbolos_de_trans = []
-                for transicao in transicoes:
-                    simbolos_de_trans.append(transicao.letra)
+			for estado in self.estados:
+				transicoes = self.transicoesDeEstado(estado)
+				simbolos_de_trans = []
+				for transicao in transicoes:
+					simbolos_de_trans.append(transicao.letra)
 
-                for simbolo in self.alfabeto:
-                    if not simbolos_de_trans.__contains__(simbolo):
-                        self.transicoes.append(Transicao(estado, qerro, simbolo))
+				for simbolo in self.alfabeto:
+					if not simbolos_de_trans.__contains__(simbolo):
+						self.transicoes.append(Transicao(estado, qerro, simbolo))
 
 
 class Par:
