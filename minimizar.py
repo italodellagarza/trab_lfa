@@ -127,14 +127,19 @@ class Automato(object):
 	
 	#funcao que atualiza a estrutura automato para guardar os valores do automato minimizado
 	def atualiza_automato(self,lista_tabela):
-		novo_estado = ""
+		novo_estado = []
+		cont = 0
 		for linha in lista_tabela:
 			if linha.dij:
-				if novo_estado.find(linha.estado1.nomeEstado) == -1:
-					novo_estado = novo_estado + linha.estado1.nomeEstado
-				if novo_estado.find(linha.estado2.nomeEstado) == -1:
-					novo_estado = novo_estado + linha.estado2.nomeEstado  # estados agrupados, falta adicionar na estrutura automato
+				novo_estado.append("")
+				if novo_estado[cont].find(linha.estado1.nomeEstado) == -1:
+					novo_estado[cont] = novo_estado[cont] + linha.estado1.nomeEstado
+				if novo_estado[cont].find(linha.estado2.nomeEstado) == -1:
+					novo_estado[cont] = novo_estado[cont] + linha.estado2.nomeEstado  # estados agrupados, falta adicionar na estrutura automato
+				cont +=1
+		print (novo_estado)
 
+		# arrumar o codigo pra baixo para pegar cada posicao de quando o dij for true
 		#encontrando a posicao do primeiro par true 
 		for linha in lista_tabela:
 			if linha.dij:
@@ -144,10 +149,12 @@ class Automato(object):
 		# arrumando transicoes
 		for j in range(pos, len(self.estados)):
 			for i in range(len(self.transicoes)):
+				print (j)
 				if self.transicoes[i].estadoSeguinte.nomeEstado.find(self.estados[j].nomeEstado) != -1:
-					self.transicoes[i].estadoSeguinte.nomeEstado = novo_estado
+					self.transicoes[i].estadoSeguinte.nomeEstado = novo_estado[j]
 				if self.transicoes[i].estadoSeguinte.nomeEstado.find(self.estados[j].nomeEstado) != -1:
-					self.transicoes[i].estadoSeguinte.nomeEstado = novo_estado
+					self.transicoes[i].estadoSeguinte.nomeEstado = novo_estado[j]
+
 
 		#apagando estados que foram juntados
 		del self.estados[pos+1:]
@@ -185,6 +192,29 @@ class Automato(object):
 				afd_minimizado.write(estado.nomeEstado + ",")
 		afd_minimizado.write("}\n)")
 		afd_minimizado.close()
+
+ #Extra: Transformação de um AFD qualquer em um AFD completo
+    def e_completo(self):
+        for estado in self.estados:
+            transicoes = self.transicoesDeEstado(estado)
+            if len(transicoes) != len(self.alfabeto):
+                return False
+        return True
+
+    def transforma_em_completo(self):
+        if not self.e_completo():
+            qerro = Estado("qerro")
+            self.estados.append(qerro)
+
+            for estado in self.estados:
+                transicoes = self.transicoesDeEstado(estado)
+                simbolos_de_trans = []
+                for transicao in transicoes:
+                    simbolos_de_trans.append(transicao.letra)
+
+                for simbolo in self.alfabeto:
+                    if not simbolos_de_trans.__contains__(simbolo):
+                        self.transicoes.append(Transicao(estado, qerro, simbolo))
 
 
 class Par:
