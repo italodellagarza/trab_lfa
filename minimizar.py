@@ -4,7 +4,7 @@
 #                    Márcio Inácio
 # Para a disciplina de Linguagens Formais e Autômatos
 # na Universidade Federal de Lavras - UFLA
-# Data: 
+# Data: 22/07/2017
 
 '''O programa minimiza um autômato finito determinístico conforme o arquivo de entrada
    O autômato é aqui formalizado em uma quíntupla (estados, alfabeto, transições, iniciais e finais)
