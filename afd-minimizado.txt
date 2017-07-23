@@ -1,21 +1,16 @@
 (
-{q0,q1q4,q3q6,q2q5,q7,}
-{a, b},
+{q0,q1,q2q3,qerro}
+{letra, digito},
 {
-(q0,a->q1q4),
-(q0,b->q1q4),
-(q1q4,a->q2q5),
-(q1q4,b->q3q6),
-(q2q5,b->q7),
-(q3q6,a->q7),
-(q1q4,a->q2q5),
-(q1q4,b->q3q6),
-(q2q5,b->q7),
-(q3q6,a->q7),
-(q3q6,b->q3q6),
-(q7,a->q7),
-(q7,b->q7),
+(q0,letra->q1),
+(q1,letra->q2q3),
+(q1,digito->q2q3),
+(q0,digito->qerro),
+(q2q3,letra->qerro),
+(q2q3,digito->qerro),
+(qerro,letra->qerro),
+(qerro,digito->qerro),
 },
 q0,
-{q1q4,q3q6,q2q5,}
+{q2q3}
 )
