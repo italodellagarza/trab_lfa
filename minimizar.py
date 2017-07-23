@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3
 # Desenvolvido por:  Ítalo Della Garza Silva
 #                    Bruno Queiróz Santos
 #                    Márcio Inácio
