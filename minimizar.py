@@ -151,7 +151,7 @@ class Automato(object):
 		#apagando estados que foram juntados
 		for i in pos:
 			del self.estados[i+1]
-			del self.transicoes[(i*len(self.alfabeto))+1]
+			del self.transicoes[(i*len(self.alfabeto))+2]
 
 	# recebe lista_pares da funçao minimizaAutomato e escreve conteudo na tabela.txt 
 	def escreve_tabela(self,lista_tabela):
