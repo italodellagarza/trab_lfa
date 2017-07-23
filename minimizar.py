@@ -137,23 +137,21 @@ class Automato(object):
 					novo_estado[cont] = novo_estado[cont] + linha.estado1.nomeEstado
 				if novo_estado[cont].find(linha.estado2.nomeEstado) == -1:
 					novo_estado[cont] = novo_estado[cont] + linha.estado2.nomeEstado  # estados agrupados, falta adicionar na estrutura automato
-				cont +=1
 				pos.append(int(linha.estado1.nomeEstado.replace("q","")))
+				#pos.append(int(linha.estado1.nomeEstado.replace("q","")))
+				cont +=1
 		print (novo_estado)
 
 		# arrumando transicoes
 		for i in pos:
 			for j in range(len(self.transicoes)):
-				if self.transicoes[j].estadoSeguinte.nomeEstado.find(self.estados[i-1].nomeEstado) != -1:
+				if self.transicoes[j].estadoSeguinte.nomeEstado in novo_estado[i-1]:
 					self.transicoes[j].estadoSeguinte.nomeEstado = novo_estado[i-1]
-				if self.transicoes[j].estadoSeguinte.nomeEstado.find(self.estados[i-1].nomeEstado) != -1:
-					self.transicoes[j].estadoSeguinte.nomeEstado = novo_estado[i-1]
-
 
 		#apagando estados que foram juntados
 		for i in pos:
 			del self.estados[i+1]
-			del self.transicoes[(i*len(self.alfabeto))+2]
+			del self.transicoes[(i*len(self.alfabeto))+1]
 
 	# recebe lista_pares da funçao minimizaAutomato e escreve conteudo na tabela.txt 
 	def escreve_tabela(self,lista_tabela):
